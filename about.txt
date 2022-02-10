@@ -1,0 +1,28 @@
+This project is based on ESP IDF framework.
+I couldn't get "Arduino as IDF component" (framework = espidf, arduino) to compile properly, so instead I used IDF and manually copied in the Arduino libraries I need. 
+They did need some adjustments to the header includes to compile.
+Also since Arduino isn't in the framework, PIO doesn't include the Arduino defines in sdkconfig.h.
+
+---Platform---
+;platform = espressif32
+;platform = https://github.com/tasmota/platform-espressif32/releases/download/v2.0.2idf/platform-espressif32-2.0.2.zip
+platform = https://github.com/tasmota/platform-espressif32/releases/download/v2.0.2.2/platform-tasmota-espressif32-2.0.2.zip
+I am using a custom branch of espressif32 by TASMOTA.  The package is wrapped in a PlatformIO project, so it automatically downloads the correct Arduino and compiler libraries.
+The TASMOTA project appears to be very active and includes many bugfixes.  They also roll in any changes to the base IDF.
+2022-02-01 ESP recently released IDF 4.4 and TASMOTA updated to that branch, so now using 2.0.2.2.
+
+---TASMOTA BUILD FLAGS---
+    ---DEBUGGING---
+    LOG_LOCAL_LEVEL=2       ;IDF log level WARN. Affects startup log messages.
+        esp_log.h
+            ESP_LOG_NONE=0,     //No log output
+            ESP_LOG_ERROR,      //Critical errors, software module can not recover on its own
+            ESP_LOG_WARN,       //Error conditions from which recovery measures have been taken
+            ESP_LOG_INFO,       //Information messages which describe normal flow of events
+            ESP_LOG_DEBUG,      //Extra information which is not necessary for normal use (values, pointers, sizes, etc)
+            ESP_LOG_VERBOSE     //Bigger chunks of debugging information, or frequent messages which can potentially flood the output
+    ;To reduce code size set a lower max log level using menuconfig. CONFIG_LOG_MAXIMUM_LEVEL=3, CONFIG_LOG_DEFAULT_LEVEL=3.
+    ;https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/system/log.html
+
+    ;Arduino log level.  1=ERR 2=WARN, 3=INFO, 4 DEBUG, 5=VERBOSE.
+    CORE_DEBUG_LEVEL=4
